@@ -1,5 +1,11 @@
+# R CMD BATCH mode:
+# R CMD BATCH --no-save --no-restore '--args "all"' 00.get_metadata.R
+
 library(rvest)
 library(magrittr)
+
+args <- commandArgs(TRUE)
+Days <- eval(parse(text=args[1]))
 
 Download <- function(x){
   read_html(x) %>% {
@@ -46,10 +52,10 @@ Get_catalog <- function(x = '7'){
     i <- i + 1
     Url <- paste0('http://www.aisixiang.com/toplist/index.php?id=1&period=', x, '&page=', i)
     Aisixiang <- rbind(Aisixiang, Download(Url))
-    print(i)
+    print(paste("Downloading page", i))
     Sys.sleep(1)
   }
   write.csv(Aisixiang, file = Name_date, row.names = F) # 注意命名
 }
 
-Get_catalog()
+Get_catalog(Days)
